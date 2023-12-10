@@ -52,7 +52,7 @@ func NewClient(appName string, opts ...options.Option[Client]) (*Client, error) 
 		holdDur:       time.Second * 15,
 		pollInterval:  time.Second,
 		hcOutChanSize: 100,
-		hashring:      &hashring.HashRing{},
+		hashring:      hashring.New([]string{}),
 		logger: zerolog.New(zerolog.ConsoleWriter{
 			Out:        os.Stdout,
 			TimeFormat: time.RFC3339,

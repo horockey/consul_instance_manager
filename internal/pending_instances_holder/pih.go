@@ -11,7 +11,6 @@ import (
 )
 
 type PendingInstancesHolder struct {
-	storage    map[model.Instance]time.Time
 	holdPeriod time.Duration
 	sched      *scheduler.Scheduler[model.InstanceChange]
 
@@ -26,8 +25,8 @@ func New(holdPeriod time.Duration) (*PendingInstancesHolder, error) {
 
 	return &PendingInstancesHolder{
 		holdPeriod: holdPeriod,
-		storage:    map[model.Instance]time.Time{},
 		sched:      sched,
+		out:        make(chan model.InstanceChange, 100),
 	}, nil
 }
 

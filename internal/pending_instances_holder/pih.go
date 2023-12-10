@@ -32,9 +32,9 @@ func New(holdPeriod time.Duration) (*PendingInstancesHolder, error) {
 
 func (pih *PendingInstancesHolder) Start(ctx context.Context) error {
 	errs := make(chan error)
-	defer close(errs)
 
 	go func() {
+		defer close(errs)
 		if err := pih.sched.Start(ctx); err != nil {
 			errs <- err
 		}

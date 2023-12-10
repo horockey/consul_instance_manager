@@ -1,0 +1,75 @@
+@startuml
+
+package consul_instance_manager{
+    class Client{
+        - HealthChecker
+        - PendingInstancesHolder
+
+        + NewClient(appName, opts...) *Client
+        + Start(ctx) error
+        + GetInstances() ([]*Instance, error)
+        + GetDataHolder(key string) (*Instance, error)
+        + Register(hostname string, address string) error
+        + Deregister(hostname string) error
+    }
+
+    struct Instance{
+        - name    string
+	    - address string
+	    - status  InstanceStatus
+
+        + Name() string
+        + Address() stirng
+        + Status() InstanceStatus
+    }
+
+    enum InstanceStatus{
+        Alive
+        Pending
+    }
+
+    Client -right-> Instance
+    Instance -right-> InstanceStatus
+}
+
+
+package internal.pending_instance_holder{
+    class PendingInstancesHolder{
+        + New(pendingeriod) *PendingInstancesHolder
+        + Start(ctx) error
+        + Out() chan model.InstanceChange
+        + Add(ins model.Instance) error
+        + Remove(ins model.Instance) error
+    }
+}
+
+package internal.healthchecker{
+    class HealthChecker{
+        + New(consulClient, serviceName, pollInterval) *HealthChecker
+        + Start(ctx) error
+        + Out() chan model.InstanceChange
+        - scan() error
+    }
+}
+
+package model{
+    struct Instance{
+        + Name    string
+	    + Address string
+    }
+
+    struct InstanceChange {
+        + Instance Instance
+        + IsDown   bool
+    }
+    InstanceChange -right-> Instance
+}
+
+internal.healthchecker.HealthChecker --> model.InstanceChange
+internal.pending_instance_holder.PendingInstancesHolder --> model.InstanceChange
+internal.pending_instance_holder.PendingInstancesHolder --> model.Instance
+
+consul_instance_manager.Client *-- internal.pending_instance_holder.PendingInstancesHolder
+consul_instance_manager.Client *-- internal.healthchecker.HealthChecker
+
+@enduml

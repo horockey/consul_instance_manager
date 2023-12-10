@@ -12,7 +12,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type healthChecker struct {
+type HealthChecker struct {
 	cl          *consul.Client
 	serviceName string
 
@@ -30,8 +30,8 @@ func New(
 	pollInterval time.Duration,
 	outChanSize uint,
 	logger zerolog.Logger,
-) *healthChecker {
-	return &healthChecker{
+) *HealthChecker {
+	return &HealthChecker{
 		cl:             cl,
 		lastScanAlives: []model.Instance{},
 		serviceName:    serviceName,
@@ -41,11 +41,17 @@ func New(
 	}
 }
 
-func (hc *healthChecker) Out() chan model.InstanceChange {
+func (hc *HealthChecker) Out() chan model.InstanceChange {
 	return hc.out
 }
 
-func (hc *healthChecker) Start(ctx context.Context) error {
+func (hc *HealthChecker) Start(ctx context.Context) error {
+	if err := hc.scan(); err != nil {
+		hc.logger.Error().
+			Err(fmt.Errorf("scanning alive nodes: %w", err)).
+			Send()
+	}
+
 	ticker := time.NewTicker(hc.pollInterval)
 	for {
 		select {
@@ -64,7 +70,7 @@ func (hc *healthChecker) Start(ctx context.Context) error {
 	}
 }
 
-func (hc *healthChecker) scan() error {
+func (hc *HealthChecker) scan() error {
 	entries, _, err := hc.cl.Catalog().Service(hc.serviceName, "", nil)
 	if err != nil {
 		return fmt.Errorf("getting service entries: %w", err)

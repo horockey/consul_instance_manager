@@ -12,22 +12,19 @@ import (
 )
 
 const (
-	// InstanceStatusDead is a InstanceStatus of type Dead.
-	InstanceStatusDead InstanceStatus = iota
+	// InstanceStatusAlive is a InstanceStatus of type Alive.
+	InstanceStatusAlive InstanceStatus = iota
 	// InstanceStatusPending is a InstanceStatus of type Pending.
 	InstanceStatusPending
-	// InstanceStatusAlive is a InstanceStatus of type Alive.
-	InstanceStatusAlive
 )
 
 var ErrInvalidInstanceStatus = errors.New("not a valid InstanceStatus")
 
-const _InstanceStatusName = "deadpendingalive"
+const _InstanceStatusName = "alivepending"
 
 var _InstanceStatusMap = map[InstanceStatus]string{
-	InstanceStatusDead:    _InstanceStatusName[0:4],
-	InstanceStatusPending: _InstanceStatusName[4:11],
-	InstanceStatusAlive:   _InstanceStatusName[11:16],
+	InstanceStatusAlive:   _InstanceStatusName[0:5],
+	InstanceStatusPending: _InstanceStatusName[5:12],
 }
 
 // String implements the Stringer interface.
@@ -46,9 +43,8 @@ func (x InstanceStatus) IsValid() bool {
 }
 
 var _InstanceStatusValue = map[string]InstanceStatus{
-	_InstanceStatusName[0:4]:   InstanceStatusDead,
-	_InstanceStatusName[4:11]:  InstanceStatusPending,
-	_InstanceStatusName[11:16]: InstanceStatusAlive,
+	_InstanceStatusName[0:5]:  InstanceStatusAlive,
+	_InstanceStatusName[5:12]: InstanceStatusPending,
 }
 
 // ParseInstanceStatus attempts to convert a string to a InstanceStatus.

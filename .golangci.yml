@@ -1,0 +1,94 @@
+linters:
+  disable:
+    - gosimple
+    - ineffassign
+    - typecheck
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - unused
+    - asasalint
+    - errname
+    - exportloopref
+    - forcetypeassert
+    - gocheckcompilerdirectives
+    - misspell
+    - gofumpt
+    - makezero
+    - musttag
+    - nilnil
+    - predeclared
+    - sqlclosecheck
+    - unconvert
+    - unparam
+    - wrapcheck
+    - errorlint
+    - durationcheck
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+  govet:
+    check-shadowing: false
+  tagalign:
+    align: true
+  misspell:
+    locale: US
+  makezero:
+    always: true
+  errorlint:
+    errorf: true
+    errorf-multi: true
+    asserts: false
+    comparison: true
+  staticcheck:
+    checks:
+      - "all"
+      - "-SA1003"
+      - "-SA1005"
+      - "-SA1007"
+      - "-SA1010"
+      - "-SA1011"
+      - "-SA1013"
+      - "-SA1016"
+      - "-SA1018"
+      - "-SA1020"
+      - "-SA1024"
+      - "-SA1026"
+      - "-SA1029"
+      - "-SA1030"
+      - "-SA4013"
+      - "-SA4014"
+      - "-SA4015"
+      - "-SA4016"
+      - "-SA4017"
+      - "-SA4018"
+      - "-SA4019"
+      - "-SA4021"
+      - "-SA4022"
+      - "-SA4023"
+      - "-SA4025"
+      - "-SA4026"
+      - "-SA4028"
+      - "-SA4029"
+      - "-SA4031"
+      - "-SA5002"
+      - "-SA5005"
+      - "-SA5008"
+      - "-SA5010"
+      - "-SA5012"
+      - "-SA6001"
+      - "-SA6003"
+      - "-SA6005"
+      - "-SA9001"
+      - "-SA9002"
+      - "-SA9003"
+      - "-SA9006"
+      - "-SA9007"
+      - "-S1006"
+      - "-S1012"
+      - "-S1016"
+      - "-ST1"
+      - "-QF1"
+severity:
+  default-severity: error

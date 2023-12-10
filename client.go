@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	consul "github.com/hashicorp/consul/api"
 	"github.com/horockey/consul_instance_manager/internal/healthchecker"
 	"github.com/horockey/consul_instance_manager/internal/pending_instances_holder"
@@ -142,6 +143,8 @@ func (cl *Client) Start(ctx context.Context) (resErr error) {
 	return resErr
 }
 
+// Get list of alive instances now.
+// Client must be started to run this method properly.
 func (cl *Client) GetInstances() ([]*Instance, error) {
 	cl.mu.RLock()
 	defer cl.mu.RUnlock()
@@ -149,6 +152,8 @@ func (cl *Client) GetInstances() ([]*Instance, error) {
 	return maps.Values(cl.instances), nil
 }
 
+// Get instance that holds given key.
+// Client must be started to run this method properly.
 func (cl *Client) GetDataHolder(key string) (*Instance, error) {
 	node, ok := cl.hashring.GetNode(key)
 	if !ok {
@@ -163,4 +168,41 @@ func (cl *Client) GetDataHolder(key string) (*Instance, error) {
 	}
 
 	return ins, nil
+}
+
+// Registers new instance of cl.appName with given parameters.
+func (cl *Client) Register(hostname string, address string) error {
+	if _, err := cl.cl.Catalog().Register(&consul.CatalogRegistration{
+		ID:      uuid.NewString(),
+		Node:    hostname,
+		Address: address,
+		Service: &consul.AgentService{
+			ID:      cl.appName + "_" + hostname,
+			Service: cl.appName,
+		},
+		Checks: consul.HealthChecks{
+			{
+				Node:    hostname,
+				CheckID: uuid.NewString(),
+				Status:  consul.HealthPassing,
+			},
+		},
+	}, nil); err != nil {
+		return fmt.Errorf("registering in consul: %w", err)
+	}
+
+	return nil
+}
+
+// Deregisters instance of cl.appName with given parameters.
+func (cl *Client) Deregister(hostname string) error {
+	_, err := cl.cl.Catalog().Deregister(&consul.CatalogDeregistration{
+		Node:      hostname,
+		ServiceID: cl.appName + "_" + hostname,
+	}, nil)
+	if err != nil {
+		return fmt.Errorf("deregistering from consul: %w", err)
+	}
+
+	return nil
 }

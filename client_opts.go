@@ -56,10 +56,3 @@ func WithPollInterval(dur time.Duration) options.Option[Client] {
 		return nil
 	}
 }
-
-func WithHealthCheckingOutChanSize(s uint) options.Option[Client] {
-	return func(target *Client) error {
-		target.hcOutChanSize = s
-		return nil
-	}
-}

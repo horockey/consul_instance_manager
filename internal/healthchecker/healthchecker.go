@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"slices"
 	"time"
 
@@ -72,7 +73,7 @@ func (hc *HealthChecker) Start(ctx context.Context) error {
 
 func (hc *HealthChecker) scan() error {
 	entries, _, err := hc.cl.Catalog().Service(hc.serviceName, "", nil)
-	if err != nil {
+	if err != nil && !errors.Is(err, io.EOF) {
 		return fmt.Errorf("getting service entries: %w", err)
 	}
 
@@ -110,6 +111,8 @@ func (hc *HealthChecker) scan() error {
 			IsDown:   true,
 		}
 	}
+
+	hc.lastScanAlives = alives
 
 	return nil
 }

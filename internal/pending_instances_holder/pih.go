@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/horockey/consul_instance_manager/internal/model"
+	"github.com/horockey/go-consul-instance-manager/internal/model"
 	"github.com/horockey/go-scheduler"
 )
 

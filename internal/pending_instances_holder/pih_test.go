@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/horockey/consul_instance_manager/internal/model"
-	"github.com/horockey/consul_instance_manager/internal/pending_instances_holder"
+	"github.com/horockey/go-consul-instance-manager/internal/model"
+	"github.com/horockey/go-consul-instance-manager/internal/pending_instances_holder"
 	"github.com/stretchr/testify/require"
 )
 

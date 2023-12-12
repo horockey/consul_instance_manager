@@ -9,7 +9,7 @@ import (
 	"time"
 
 	consul "github.com/hashicorp/consul/api"
-	"github.com/horockey/consul_instance_manager/internal/model"
+	"github.com/horockey/go-consul-instance-manager/internal/model"
 	"github.com/rs/zerolog"
 )
 

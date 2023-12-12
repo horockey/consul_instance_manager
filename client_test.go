@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/consul/api"
-	consul_iman "github.com/horockey/consul_instance_manager"
+	consul_iman "github.com/horockey/go-consul-instance-manager"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"github.com/testcontainers/testcontainers-go"

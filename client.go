@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/uuid"
 	consul "github.com/hashicorp/consul/api"
-	"github.com/horockey/consul_instance_manager/internal/healthchecker"
-	"github.com/horockey/consul_instance_manager/internal/pending_instances_holder"
+	"github.com/horockey/go-consul-instance-manager/internal/healthchecker"
+	"github.com/horockey/go-consul-instance-manager/internal/pending_instances_holder"
 	"github.com/horockey/go-toolbox/options"
 	"github.com/rs/zerolog"
 	"github.com/serialx/hashring"

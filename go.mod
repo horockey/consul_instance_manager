@@ -1,4 +1,4 @@
-module github.com/horockey/consul_instance_manager
+module github.com/horockey/go-consul-instance-manager
 
 go 1.21.3
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/horockey/consul_instance_manager"
+	consul_instance_manager "github.com/horockey/go-consul-instance-manager"
 )
 
 const serviceName = "my_awesome_service"

@@ -1,4 +1,4 @@
-package go-consul-instance-manager_test
+package go_consul_instance_manager_test
 
 import (
 	"context"

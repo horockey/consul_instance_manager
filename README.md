@@ -1,4 +1,4 @@
-# consul_instance_manager
+# go-consul-instance-manager
 
 Библиотека для отслеживания состояния экземпляров какого-либо сервиса через Hashicorp Consul.
 

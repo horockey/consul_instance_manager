@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"time"
 
-	consul_instance_manager "github.com/horockey/go-consul-instance-manager"
+	go-consul-instance-manager "github.com/horockey/go-consul-instance-manager"
 )
 
 const serviceName = "my_awesome_service"
 
 func main() {
-	iman, err := consul_instance_manager.NewClient(
+	iman, err := go-consul-instance-manager.NewClient(
 		serviceName,
-		consul_instance_manager.WithPollInterval(time.Millisecond*500),
-		consul_instance_manager.WithDownHoldDuration(time.Second*3),
+		go-consul-instance-manager.WithPollInterval(time.Millisecond*500),
+		go-consul-instance-manager.WithDownHoldDuration(time.Second*3),
 	)
 	panicOnErr(err)
 

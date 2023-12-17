@@ -24,6 +24,7 @@ func TestAdd(t *testing.T) {
 		err := pih.Start(context.TODO())
 		require.NoError(t, err)
 	}()
+	time.Sleep(time.Millisecond * 100)
 
 	ts := time.Now()
 	err = pih.Add(instance)
@@ -44,6 +45,7 @@ func TestRemove(t *testing.T) {
 		err := pih.Start(context.TODO())
 		require.NoError(t, err)
 	}()
+	time.Sleep(time.Millisecond * 100)
 
 	err = pih.Add(instance)
 	require.NoError(t, err)

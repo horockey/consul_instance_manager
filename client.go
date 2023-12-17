@@ -1,10 +1,11 @@
-package consul_instance_manager
+package go-consul-instance-manager
 
 import (
 	"context"
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 	"sync"
 	"time"
 
@@ -26,8 +27,8 @@ type Client struct {
 
 	cl *consul.Client
 
-	appName  string
-	hashring *hashring.HashRing
+	appName   string
+	hashrings []*hashring.HashRing
 
 	pih     *pending_instances_holder.PendingInstancesHolder
 	holdDur time.Duration
@@ -53,7 +54,7 @@ func NewClient(appName string, opts ...options.Option[Client]) (*Client, error) 
 		holdDur:       time.Second * 15,
 		pollInterval:  time.Second,
 		hcOutChanSize: 100,
-		hashring:      hashring.New([]string{}),
+		hashrings:     []*hashring.HashRing{hashring.New([]string{})},
 		logger: zerolog.New(zerolog.ConsoleWriter{
 			Out:        os.Stdout,
 			TimeFormat: time.RFC3339,
@@ -111,7 +112,9 @@ func (cl *Client) Start(ctx context.Context) (resErr error) {
 					address: ev.Instance.Address,
 					status:  InstanceStatusAlive,
 				}
-				cl.hashring = cl.hashring.AddNode(ev.Instance.Name)
+				for idx, hr := range cl.hashrings {
+					cl.hashrings[idx] = hr.AddNode(ev.Instance.Name)
+				}
 				cl.mu.Unlock()
 			case ev.IsDown:
 				cl.mu.Lock()
@@ -132,7 +135,9 @@ func (cl *Client) Start(ctx context.Context) (resErr error) {
 		case ev := <-cl.pih.Out():
 			cl.mu.Lock()
 			delete(cl.instances, ev.Instance.Name)
-			cl.hashring = cl.hashring.RemoveNode(ev.Instance.Name)
+			for idx, hr := range cl.hashrings {
+				cl.hashrings[idx] = hr.RemoveNode(ev.Instance.Name)
+			}
 			cl.mu.Unlock()
 
 		case <-ctx.Done():
@@ -152,22 +157,32 @@ func (cl *Client) GetInstances() ([]*Instance, error) {
 	return maps.Values(cl.instances), nil
 }
 
-// Get instance that holds given key.
+// Get list of instances that hold given key.
 // Client must be started to run this method properly.
-func (cl *Client) GetDataHolder(key string) (*Instance, error) {
-	node, ok := cl.hashring.GetNode(key)
-	if !ok {
-		return nil, fmt.Errorf("data holder for key %s not found", key)
-	}
+func (cl *Client) GetDataHolders(key string) ([]*Instance, error) {
+	inses := map[*Instance]struct{}{}
 
 	cl.mu.RLock()
-	ins, found := cl.instances[node]
-	cl.mu.RUnlock()
-	if !found {
-		return nil, fmt.Errorf("unknow instance node: %s", node)
+	defer cl.mu.RUnlock()
+
+	for _, hr := range cl.hashrings {
+		node, ok := hr.GetNode(key)
+		if !ok {
+			return nil, fmt.Errorf("data holder for key %s not found", key)
+		}
+
+		ins, found := cl.instances[node]
+		if !found {
+			return nil, fmt.Errorf("unknow instance node: %s", node)
+		}
+
+		inses[ins] = struct{}{}
 	}
 
-	return ins, nil
+	keys := maps.Keys(inses)
+	sort.Slice(keys, func(i, j int) bool { return keys[i].Name() < keys[j].Name() })
+
+	return keys, nil
 }
 
 // Registers new instance of cl.appName with given parameters.

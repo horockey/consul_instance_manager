@@ -1,4 +1,4 @@
-package consul_instance_manager
+package go-consul-instance-manager
 
 type Instance struct {
 	name    string

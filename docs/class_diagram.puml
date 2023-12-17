@@ -1,6 +1,6 @@
 @startuml
 
-package consul_instance_manager{
+package go-consul-instance-manager{
     class Client{
         - HealthChecker
         - PendingInstancesHolder
@@ -69,7 +69,7 @@ internal.healthchecker.HealthChecker --> model.InstanceChange
 internal.pending_instance_holder.PendingInstancesHolder --> model.InstanceChange
 internal.pending_instance_holder.PendingInstancesHolder --> model.Instance
 
-consul_instance_manager.Client *-- internal.pending_instance_holder.PendingInstancesHolder
-consul_instance_manager.Client *-- internal.healthchecker.HealthChecker
+go-consul-instance-manager.Client *-- internal.pending_instance_holder.PendingInstancesHolder
+go-consul-instance-manager.Client *-- internal.healthchecker.HealthChecker
 
 @enduml

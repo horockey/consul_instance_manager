@@ -1,4 +1,4 @@
-package consul_instance_manager
+package go-consul-instance-manager
 
 import (
 	"errors"
@@ -8,6 +8,7 @@ import (
 	consul "github.com/hashicorp/consul/api"
 	"github.com/horockey/go-toolbox/options"
 	"github.com/rs/zerolog"
+	"github.com/serialx/hashring"
 )
 
 // Sets custom logger.
@@ -53,6 +54,17 @@ func WithPollInterval(dur time.Duration) options.Option[Client] {
 		}
 
 		target.pollInterval = dur
+		return nil
+	}
+}
+
+func WithBackupHashring(hashFunc hashring.HashFunc) options.Option[Client] {
+	return func(target *Client) error {
+		if hashFunc == nil {
+			return errors.New("got nil backup hashfunc")
+		}
+
+		target.hashrings = append(target.hashrings, hashring.NewWithHash([]string{}, hashFunc))
 		return nil
 	}
 }

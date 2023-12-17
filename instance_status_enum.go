@@ -4,7 +4,7 @@
 // Build Date: 2023-07-25T23:27:55Z
 // Built By: goreleaser
 
-package consul_instance_manager
+package go-consul-instance-manager
 
 import (
 	"errors"
